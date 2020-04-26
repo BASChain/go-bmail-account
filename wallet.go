@@ -92,3 +92,24 @@ func (bmw *BMWallet) SignObj(v interface{}) ([]byte, error) {
 	}
 	return ed25519.Sign(bmw.PriKey, rawBytes), nil
 }
+
+func LoadWallet(wPath string) (Wallet, error) {
+	jsonStr, err := ioutil.ReadFile(wPath)
+	if err != nil {
+		return nil, err
+	}
+
+	w := new(BMWallet)
+	if err := json.Unmarshal(jsonStr, w); err != nil {
+		return nil, err
+	}
+	return w, nil
+}
+
+func LoadWalletByData(jsonStr string) (Wallet, error) {
+	w := new(BMWallet)
+	if err := json.Unmarshal([]byte(jsonStr), w); err != nil {
+		return nil, err
+	}
+	return w, nil
+}
