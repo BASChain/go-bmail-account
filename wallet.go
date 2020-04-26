@@ -10,6 +10,7 @@ import (
 
 type Wallet interface {
 	Address() Address
+	MailAddress() string
 	String() string
 	IsOpen() bool
 	Open(auth string) error
@@ -24,6 +25,7 @@ var BMWalletVersion = 1
 type BMWallet struct {
 	Version   int                `json:"version"`
 	Addr      Address            `json:"address"`
+	MailAddr  string             `json:"bmail"`
 	CipherTxt string             `json:"cipher"`
 	PriKey    ed25519.PrivateKey `json:"-"`
 }
@@ -91,6 +93,10 @@ func (bmw *BMWallet) SignObj(v interface{}) ([]byte, error) {
 		return nil, err
 	}
 	return ed25519.Sign(bmw.PriKey, rawBytes), nil
+}
+
+func (bmw *BMWallet) MailAddress() string {
+	return bmw.MailAddr
 }
 
 func LoadWallet(wPath string) (Wallet, error) {
