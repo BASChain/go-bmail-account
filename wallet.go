@@ -18,6 +18,7 @@ type Wallet interface {
 	SaveToPath(path string) error
 	Sign(v []byte) []byte
 	SignObj(v interface{}) ([]byte, error)
+	SetMailName(mailName string)
 }
 
 var BMWalletVersion = 1
@@ -97,6 +98,10 @@ func (bmw *BMWallet) SignObj(v interface{}) ([]byte, error) {
 
 func (bmw *BMWallet) MailAddress() string {
 	return bmw.MailAddr
+}
+
+func (bmw *BMWallet) SetMailName(mailName string) {
+	bmw.MailAddr = mailName
 }
 
 func LoadWallet(wPath string) (Wallet, error) {
