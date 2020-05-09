@@ -4,6 +4,7 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/json"
+	"fmt"
 	"github.com/BASChain/go-account"
 	"io/ioutil"
 )
@@ -19,6 +20,7 @@ type Wallet interface {
 	Sign(v []byte) []byte
 	SignObj(v interface{}) ([]byte, error)
 	SetMailName(mailName string)
+	AeskeyOf(peerPub []byte) ([]byte, error)
 }
 
 var BMWalletVersion = 1
@@ -102,6 +104,13 @@ func (bmw *BMWallet) MailAddress() string {
 
 func (bmw *BMWallet) SetMailName(mailName string) {
 	bmw.MailAddr = mailName
+}
+
+func (bmw *BMWallet) AeskeyOf(peerPub []byte) ([]byte, error) {
+	if bmw.PriKey == nil {
+		return nil, fmt.Errorf("wallet is locked")
+	}
+	return account.GenerateAesKey(peerPub, bmw.PriKey)
 }
 
 func LoadWallet(wPath string) (Wallet, error) {
