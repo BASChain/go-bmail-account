@@ -40,3 +40,7 @@ func (addr Address) IsValid() bool {
 func ToAddress(key []byte) Address {
 	return Address(AccPrefix + base58.Encode(key))
 }
+
+func Verify(addr Address, data, sig []byte) bool {
+	return ed25519.Verify(addr.ToPubKey(), data, sig)
+}
