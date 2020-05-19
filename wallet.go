@@ -64,7 +64,7 @@ func (bmw *BMWallet) String() string {
 	return string(b)
 }
 func (bmw *BMWallet) IsOpen() bool {
-	return bmw.PriKey == nil
+	return bmw.PriKey != nil
 }
 
 func (bmw *BMWallet) Open(auth string) error {
