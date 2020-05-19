@@ -21,6 +21,7 @@ type Wallet interface {
 	SignObj(v interface{}) ([]byte, error)
 	SetMailName(mailName string)
 	AeskeyOf(peerPub []byte) ([]byte, error)
+	Seeds() []byte
 }
 
 var BMWalletVersion = 1
@@ -111,6 +112,13 @@ func (bmw *BMWallet) AeskeyOf(peerPub []byte) ([]byte, error) {
 		return nil, fmt.Errorf("wallet is locked")
 	}
 	return account.GenerateAesKey(peerPub, bmw.PriKey)
+}
+
+func (bmw *BMWallet) Seeds() []byte {
+	if bmw.PriKey == nil {
+		return nil
+	}
+	return bmw.PriKey.Seed()
 }
 
 func LoadWallet(wPath string) (Wallet, error) {
