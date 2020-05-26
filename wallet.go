@@ -1,6 +1,7 @@
 package bmail
 
 import (
+	"bytes"
 	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/json"
@@ -68,10 +69,17 @@ func (bmw *BMWallet) IsOpen() bool {
 }
 
 func (bmw *BMWallet) Open(auth string) error {
-	subKey, err := account.DecryptSubPriKey(bmw.Addr.ToPubKey(), bmw.CipherTxt, auth)
+	pubKey := bmw.Addr.ToPubKey()
+
+	subKey, err := account.DecryptSubPriKey(pubKey, bmw.CipherTxt, auth)
 	if err != nil {
 		return err
 	}
+	pub := subKey.Public().(ed25519.PublicKey)
+	if 0 != bytes.Compare(pubKey, pub) {
+		return fmt.Errorf("authorized failed")
+	}
+
 	bmw.PriKey = subKey
 	return nil
 }
